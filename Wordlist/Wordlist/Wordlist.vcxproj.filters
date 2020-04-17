@@ -19,9 +19,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="curses.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-  </ItemGroup>
 </Project>

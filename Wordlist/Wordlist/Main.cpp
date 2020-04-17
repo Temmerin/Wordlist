@@ -28,7 +28,7 @@ int main()
 	cin >> letterCountMax;
 	if (letterCountMax <= 0) { letterCountMax = 1; }
 
-	cout << "Additional rules ([U]ppercase; [L]owercase; [E]xclude multiple letters: ";
+	cout << "Additional rules ([N]one; [U]ppercase; [L]owercase; [E]xclude multiple letters): ";
 	cin >> input;
 	miscRules = toUppercase(input);
 
@@ -48,66 +48,76 @@ int main()
 			multiples = true;
 			continue;
 		default:
-			break;
+			continue;
 		}
 	}
 
 	inputFile.open(inFile);
 	newFile.open(outFile, fstream::out);
 	cout << "Opening File" << endl;
-	while (!inputFile.eof())
+	if (inputFile.is_open())
 	{
-		inputFile >> input;
-		if (input.length() >= letterCountMin && input.length() <= letterCountMax)
+		while (!inputFile.eof())
 		{
-			int letterCount = 0;
-			bool canWrite = true;
-			if (multiples)
+			inputFile >> input;
+			if (input.length() >= letterCountMin && input.length() <= letterCountMax)
 			{
-				string temp = input;
-				for (int x = 0; x < input.length(); x++)
+				int letterCount = 0;
+				bool canWrite = true;
+				if (multiples)
 				{
-					letterCount = 0;
-					for (int y = 0; y < temp.length(); y++)
+					string temp = input;
+					for (int x = 0; x < input.length(); x++)
 					{
-						if (input[x] == temp[y] && letterCount < 2)
+						letterCount = 0;
+						for (int y = 0; y < temp.length(); y++)
 						{
-							letterCount++;
+							if (input[x] == temp[y] && letterCount < 2)
+							{
+								letterCount++;
+							}
 						}
+						if (letterCount > 1)
+						{
+							canWrite = false;
+							break;
+						}
+
 					}
-					if (letterCount > 1)
+				}
+
+				if (canWrite)
+				{
+					if (allUpper)
 					{
-						canWrite = false;
-						break;
+						cout << "Writing: " << input << endl;
+						newFile << toUppercase(input) << "\n";
 					}
-
-				}
-			}
-
-			if (canWrite)
-			{
-				if (allUpper)
-				{
-					cout << "Writing: " << input << endl;
-					newFile << toUppercase(input) << "\n";
-				}
-				else if (allLower)
-				{
-					cout << "Writing: " << input << endl;
-					newFile << toLowercase(input) << "\n";
-				}
-				else
-				{
-					cout << "Writing: " << input << endl;
-					newFile << input << "\n";
+					else if (allLower)
+					{
+						cout << "Writing: " << input << endl;
+						newFile << toLowercase(input) << "\n";
+					}
+					else
+					{
+						cout << "Writing: " << input << endl;
+						newFile << input << "\n";
+					}
 				}
 			}
 		}
+		cout << "Finished writing file." << endl;
+		inputFile.close();
+		newFile.close();
+
+	}
+	else
+	{
+		cout << "File not found!" << endl;
+		newFile.close();
 	}
 
-	cout << "Finished writing file." << endl;
-	inputFile.close();
-	newFile.close();
+	return 0;
 }
 
 string modifyString(string in, int mode)
